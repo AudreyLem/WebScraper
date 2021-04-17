@@ -1,22 +1,51 @@
 # CommandLine App using Python 3.6+ to scrap information from Indeed.com
-import argparse
 import sys
+from argparse import ArgumentParser
+from typing import List, Optional
 
-# Parser creation
-WebScraper_Parser = argparse.ArgumentParser(description='Scrap jobs from Indeed.com')
+import typer
 
-# Arguments definition
-WebScraper_Parser.add_argument('Command', metavar='command', type=str, help='scrape to scrap Indeed.com / filter to add filter(s)')
-
-# Execute the parse_args() method
-args = WebScraper_Parser.parse_args()
-
-command = args.Command
-commandList = ('scrape','filter')
-
-if command not in commandList:
-    print('This command is not available:', command,'\nType -h to see how to use', __file__)
-    sys.exit()
+WebScraper_Parser = typer.Typer()
+actionList = ("scrape", "filter")
 
 
-print(command)
+@WebScraper_Parser.command()
+def indeed(
+    action: str,
+    website: Optional[str] = "https://indeed.com",
+    job: Optional[List[str]] = None,
+    location: Optional[List[str]] = None,
+    salary: Optional[List[str]] = None,
+    save: Optional[str] = "jobs.json",
+    no_cache: Optional[bool] = False,
+) -> str:
+    if action not in actionList:
+        print(
+            "This action",
+            action,
+            " is not available.",
+            "\nActions available: ",
+            actionList,
+        )
+        sys.exit()
+    else:
+        print(
+            "action: ",
+            action,
+            "\nwebsite: ",
+            website,
+            "\njobs:",
+            job,
+            "\nlocations:",
+            location,
+            "\nsalaries:",
+            salary,
+            "\nsave:",
+            save,
+            "\nno-cache:",
+            no_cache,
+        )
+
+
+if __name__ == "__main__":
+    WebScraper_Parser()
