@@ -15,7 +15,7 @@ Options:
   --no-cache / --no-no-cache      [default: False]
   --install-completion [bash|zsh|fish|powershell|pwsh]
                                   Install completion for the specified shell.
-  --show-completion [bash|zsh|fish|powershell|pwsh]
+  \n--show-completion [bash|zsh|fish|powershell|pwsh]
                                   Show completion for the specified shell, to
                                   copy it or customize the installation.
 
