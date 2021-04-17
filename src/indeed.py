@@ -10,7 +10,7 @@ actionList = ("scrape", "filter")
 
 
 @WebScraper_Parser.command()
-def indeed(
+def indeed_scrape(
     action: str,
     website: Optional[str] = "https://indeed.com",
     job: Optional[List[str]] = None,
@@ -19,6 +19,20 @@ def indeed(
     save: Optional[str] = "jobs.json",
     no_cache: Optional[bool] = False,
 ) -> str:
+    """
+    Parameters:
+        action (str): scrape or filter,
+        website (str): Optional parameter to set the website to be scraped. Default value: "https://indeed.com",
+        job (List[str]): Optional parameter to set the jobs to filter,
+        location (List[str]): Optional parameter to set the locations to filter,
+        salary (List[str]): Optional parameter to set the salaries to filter,
+        save (str): Optional parameter to set the file where data will be stored. Default value: "jobs.json",
+        no_cache(bool): Optional parameter to indicate if we use cached data or not. Default value = False,
+
+        Returns:
+        str: data or filename in which data have been saved (if --save parameter was used)
+    """
+
     if action not in actionList:
         print(
             "This action",
@@ -45,7 +59,11 @@ def indeed(
             "\nno-cache:",
             no_cache,
         )
+    return "No error"
 
+
+# Docstrings
+print(indeed_scrape.__doc__)
 
 if __name__ == "__main__":
     WebScraper_Parser()
