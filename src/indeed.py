@@ -1,10 +1,22 @@
 # CommandLine App using Python 3.6+ to scrap information from Indeed.com
-import sys
+import sys, glob, os
 from argparse import ArgumentParser
 from typing import List, Optional
+from pathlib import Path
 
 import requests
 import typer
+
+# path (with fileName with extension)
+path = os.path.realpath(__file__)
+# File Name (with extension)
+fileNameWithoutExtension = Path(path).stem
+# src directory
+currentdir = os.path.dirname(path)
+# WEBSCRAPER directory
+parentdir = os.path.dirname(currentdir)
+# CacheFiles directory
+cacheFilesDirectory = str(Path(parentdir + "\cacheFiles"))
 
 WebScraper_Parser = typer.Typer()
 actionList = ("scrape", "filter")
@@ -42,6 +54,18 @@ def getHTML(website) -> requests.Response:
         requests.Response: HTML content
     """
     return requests.get(website)
+
+
+def isWebsiteCached(websiteName, pathCacheFiles) -> bool:
+    """
+    Parameters:
+        websiteName (str): name of the website
+
+        Returns:
+        bool: is cache file already exist or not-
+    """
+    cacheFiles = glob.glob(pathCacheFiles + "/*" + websiteName + ".html")
+    return len(cacheFiles) == 1
 
 
 @WebScraper_Parser.command()
@@ -89,14 +113,37 @@ def indeed_scrape(
             no_cache,
         )
 
-        # Retrieving HTML content from 'website' url
-        page = requests.get(website)
-
-        # Debug: To print status_code to know if the GET command worked
-        # print(page.status_code)
-
         # print(page.content)
-        return page.status_code
+        if action == "scrape":
+            print("Scraping...")
+
+            # if we should use cafe file
+            if not (no_cache):
+                # if cachefile does not exist, we create it
+                if not (isWebsiteCached(fileNameWithoutExtension, cacheFilesDirectory)):
+                    # Retrieving HTML content from 'website' url
+                    page = getHTML(website)
+                    # Creating .html cache file
+                    with open(
+                        cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
+                        mode="w",
+                    ) as file:
+                        file.write(str(page.content))
+
+                # Scrape in cache file
+
+            # if we should not use cache file
+            else:
+                # Retrieving HTML content from 'website' url
+                page = getHTML(website)
+
+        elif action == "filter":
+            # TODO
+            print("Filtering...")
+        else:
+            # Do nothing
+            print("Nothing")
+        # return page.status_code
     else:
         sys.exit()
 
