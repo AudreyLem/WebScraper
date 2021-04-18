@@ -33,6 +33,17 @@ def check_action(action: str, actionList: List[str]) -> bool:
         return True
 
 
+def getHTML(website) -> requests.Response:
+    """
+    Parameters:
+        website (str): URL of the website from which we want to retrieve HTNL content
+
+        Returns:
+        requests.Response: HTML content
+    """
+    return requests.get(website)
+
+
 @WebScraper_Parser.command()
 def indeed_scrape(
     action: str,
