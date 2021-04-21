@@ -3,6 +3,7 @@ import sys, glob, os
 from argparse import ArgumentParser
 from typing import List, Optional
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 import requests
 import typer
@@ -68,13 +69,34 @@ def isWebsiteCached(websiteName, pathCacheFiles) -> bool:
     return len(cacheFiles) == 1
 
 
+def buildingURL(website, job, location) -> str:
+    """
+    Parameters:
+        website (str): URL with no filter
+        job (str): job to add to the URL
+        location (str): location to add to the URL
+
+        Returns:
+        str: URL with filters added
+    """
+    url = website
+    if job:
+        url = url + "?q=" + job.replace(" ", "+")
+    if location:
+        if job:
+            url = url + "&l=" + location.replace(" ", "+")
+        else:
+            url = url + "?l=" + location.replace(" ", "+")
+    return url
+
+
 @WebScraper_Parser.command()
 def indeed_scrape(
     action: str,
     website: Optional[str] = "https://au.indeed.com/jobs",
-    job: Optional[List[str]] = None,
-    location: Optional[List[str]] = None,
-    salary: Optional[List[str]] = None,
+    job: Optional[str] = None,
+    location: Optional[str] = None,
+    salary: Optional[str] = None,
     save: Optional[str] = "jobs.json",
     no_cache: Optional[bool] = False,
 ) -> str:
@@ -82,9 +104,9 @@ def indeed_scrape(
     Parameters:
         action (str): scrape or filter,
         website (str): Optional parameter to set the website to be scraped. Default value: "https://au.indeed.com/jobs",
-        job (List[str]): Optional parameter to set the jobs to filter,
-        location (List[str]): Optional parameter to set the locations to filter,
-        salary (List[str]): Optional parameter to set the salaries to filter,
+        job (str): Optional parameter to set the job to filter,
+        location (str): Optional parameter to set the location to filter,
+        salary (str): Optional parameter to set the salary to filter (equal or greater),
         save (str): Optional parameter to set the file where data will be stored. Default value: "jobs.json",
         no_cache(bool): Optional parameter to indicate if we use cached data or not. Default value = False,
 
@@ -116,27 +138,35 @@ def indeed_scrape(
         # print(page.content)
         if action == "scrape":
             print("Scraping...")
+            # Building URL ('website' url + location + job)
+            url = buildingURL(website, job, location)
+            # Retrieving HTML content from url
+            page = getHTML(url)
 
-            # if we should use cafe file
+            # if we should use cache file
             if not (no_cache):
                 # if cachefile does not exist, we create it
                 if not (isWebsiteCached(fileNameWithoutExtension, cacheFilesDirectory)):
-                    # Retrieving HTML content from 'website' url
-                    page = getHTML(website)
                     # Creating .html cache file
                     with open(
                         cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
                         mode="w",
                     ) as file:
                         file.write(str(page.content))
-
-                # Scrape in cache file
+                # if cachefile does exist, we overwrite it
+                else:
+                    # Overwriting
+                    with open(
+                        cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
+                        mode="r+",
+                    ) as file:
+                        data = file.read()
+                        data = str(page.content)
+                        file.write(data)
 
             # if we should not use cache file
             else:
-                # Retrieving HTML content from 'website' url
-                page = getHTML(website)
-
+                print("no cache file...")
         elif action == "filter":
             # TODO
             print("Filtering...")
