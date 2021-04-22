@@ -140,36 +140,56 @@ def indeed_scrape(
             print("Scraping...")
             # Building URL ('website' url + location + job)
             url = buildingURL(website, job, location)
-            # Retrieving HTML content from url
-            page = getHTML(url)
+            
 
             # if we should use cache file
             if not (no_cache):
                 # if cachefile does not exist, we create it
                 if not (isWebsiteCached(fileNameWithoutExtension, cacheFilesDirectory)):
+                    # Retrieving HTML content from url
+                    page = getHTML(url)
                     # Creating .html cache file
                     with open(
                         cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
                         mode="w",
                     ) as file:
                         file.write(str(page.content))
+                    print("New cache file ",cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html created.")
                 # if cachefile does exist, we overwrite it
                 else:
-                    # Overwriting
-                    with open(
-                        cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
-                        mode="r+",
-                    ) as file:
-                        data = file.read()
-                        data = str(page.content)
-                        file.write(data)
+                    # Cache file does already exists --> Nothing to do
+                    print("Nothing done: cache file ",cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html exists already.")
 
             # if we should not use cache file
             else:
-                print("no cache file...")
+                print("--no-cache...")
+                # Retrieving HTML content from url
+                page = getHTML(url)
+                # Overwriting
+                with open(
+                    cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html",
+                    mode="r+",
+                ) as file:
+                    data = file.read()
+                    data = str(page.content)
+                    file.write(data)
+                print("Cache file ",cacheFilesDirectory + "/" + fileNameWithoutExtension + ".html overwritten.")
         elif action == "filter":
             # TODO
             print("Filtering...")
+            # Check if HTML cache file exists and create it with fresh data if it does not exist yet.
+            if not (isWebsiteCached(fileNameWithoutExtension, cacheFilesDirectory)):
+                indeed_scrape(
+                    action,
+                    websiten,
+                    jobn,
+                    location,
+                    salary,
+                    save,
+                    no_cache,
+                )
+            soup = BeautifulSoup(page.content, 'html.parser')
+            
         else:
             # Do nothing
             print("Nothing")
