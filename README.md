@@ -17,7 +17,9 @@ Arguments:
   ACTION  [required] ('scrape' or 'filter')
 
 Options:
+  
   --website TEXT                  [default: https://au.indeed.com/jobs]
+  
   --job TEXT
   --location TEXT
   --rating FLOAT                  [default: 0]
