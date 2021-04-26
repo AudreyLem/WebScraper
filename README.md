@@ -19,7 +19,6 @@ Arguments:
 Options:
   
   --website TEXT                  [default: https://au.indeed.com/jobs]
-  
   --job TEXT
   --location TEXT
   --rating FLOAT                  [default: 0]
@@ -31,5 +30,4 @@ Options:
   --show-completion [bash|zsh|fish|powershell|pwsh]
                                   Show completion for the specified shell, to
                                   copy it or customize the installation.
-
   --help                          Show this message and exit.
