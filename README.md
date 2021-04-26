@@ -18,24 +18,23 @@ Arguments:
 
 Options:
   
-  --website TEXT                  [default: https://au.indeed.com/jobs]
-  --job TEXT
-  --location TEXT
-  --rating FLOAT                  [default: 0]
-  --salary FLOAT                  [default: 0]
-  --save TEXT
-  --no-cache / --no-no-cache      [default: False]
-  --install-completion [bash|zsh|fish|powershell|pwsh]
+  - --website TEXT                  [default: https://au.indeed.com/jobs]
+  - --job TEXT
+  - --location TEXT
+  - --rating FLOAT                  [default: 0]
+  - --salary FLOAT                  [default: 0]
+  - --save TEXT
+  - --no-cache / --no-no-cache      [default: False]
+  - --install-completion [bash|zsh|fish|powershell|pwsh]
                                   Install completion for the specified shell.
-  --show-completion [bash|zsh|fish|powershell|pwsh]
+  - --show-completion [bash|zsh|fish|powershell|pwsh]
                                   Show completion for the specified shell, to
                                   copy it or customize the installation.
-  --help                          Show this message and exit.
+  - --help                          Show this message and exit.
 
 
 Examples of usage (in src folder):
 
-Operation	Usage
 - Start the scaping process based on the job title "Consulting" and location Australia (This should use cached files if they exist and store them if they dont already exist)	
   -  python3 indeed.py scrape --job "Consulting" --location "Australia"
 - Start the scaping process but ignore the cached data and force scrape from the indeed website	
